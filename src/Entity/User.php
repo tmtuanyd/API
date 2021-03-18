@@ -14,13 +14,23 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource(
+ *     normalizationContext={"groups"={"get"}},
  *     itemOperations={
  *          "get"={
- *             "access_control"="is_granted('IS_AUTHENTICATED_FULLY')"
+ *             "access_control"="is_granted('IS_AUTHENTICATED_FULLY')",
+ *              "normalization_context"={"groups"={"get"}}
+ *          },
+ *          "put"={
+ *              "access_control"="object == user",
+ *              "denormalization_context"={"groups"={"put"}}
  *          }
  *      },
- *     collectionOperations={"post"},
- *     normalizationContext={"group": {"read"}}
+ *     collectionOperations={
+ *          "post"={
+ *              "denormalization_context"={"groups"={"post"}}
+ *          }
+ *     },
+ *
  * )
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @ORM\Table(name="`user`")
@@ -32,45 +42,46 @@ class User implements UserInterface
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"read"})
+     * @Groups({"get"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"read", "write"})
+     * @Groups({"get", "post"})
      * @Assert\NotBlank()
      */
     private $username;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups("put", "post")
      * @Assert\NotBlank()
      */
     private $password;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"write"})
+     * @Groups({"put", "get", "post"})
      */
     private $fullname;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"read"})
+     * @Groups({"post", "put"})
      * @Assert\Email()
      */
     private $email;
 
     /**
      * @ORM\OneToMany(targetEntity=BlogPost::class, mappedBy="author")
-     * @Groups({"read"})
+     * @Groups({"get"})
      */
     private $blogPosts;
 
     /**
      * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="Author")
-     * @Groups({"read"})
+     * @Groups({"get"})
      */
     private $comments;
 
