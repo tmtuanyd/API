@@ -8,8 +8,14 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ApiResource(
- *     itemOperations={"get"},
- *     collectionOperations={"get"}
+ *     itemOperations={"get",
+ *          "put"={
+ *              "access_control"="object.getAuthor() == user"
+ *           }
+ *      },
+ *     collectionOperations={"get",
+ *     "post"
+ *      }
  * )
  * @ORM\Entity(repositoryClass=CommentRepository::class)
  */
