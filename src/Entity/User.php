@@ -48,7 +48,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"get", "post"})
+     * @Groups({"get", "post", "got-comment"})
      * @Assert\NotBlank()
      */
     private $username;
@@ -62,13 +62,13 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"put", "get", "post"})
+     * @Groups({"put", "get", "post", "got-comment"})
      */
     private $fullname;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"post", "put"})
+     * @Groups({"post", "put", "got-comment"})
      * @Assert\Email()
      */
     private $email;

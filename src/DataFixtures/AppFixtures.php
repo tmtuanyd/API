@@ -52,7 +52,7 @@ class AppFixtures extends Fixture
             $blogPost->setPublished($this->faker->dateTimeThisMonth);
             $blogPost->setContent($this->faker->realText());
 
-            $authorReference = $this->getRandomUserReference();
+            $authorReference = $this->getReference($this->getRandomUserReference());
             $blogPost->setAuthor($authorReference);
             $blogPost->setSlug($this->faker->slug);
 
@@ -75,7 +75,7 @@ class AppFixtures extends Fixture
                 $comment = new Comment();
                 $comment->setContent($this->faker->realText());
                 $comment->setPublished($this->faker->dateTimeThisMonth);
-                $authorReference = $this->getRandomUserReference();
+                $authorReference = $this->getReference($this->getRandomUserReference()) ;
                 $comment->setAuthor($authorReference);
                 $comment->setBlogPost($blog);
 
@@ -102,8 +102,12 @@ class AppFixtures extends Fixture
         $manager->flush();
     }
 
+    /**
+     * @return string
+     * @throws \Exception
+     */
     protected function getRandomUserReference():string
     {
-        return 'user_'.self::USERS[rand(0, 2)['username']];
+        return 'user_' . self::USERS[random_int(0, 2)]['username'];
     }
 }

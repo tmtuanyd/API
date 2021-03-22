@@ -5,6 +5,9 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\CommentRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource(
@@ -13,40 +16,55 @@ use Doctrine\ORM\Mapping as ORM;
  *              "access_control"="object.getAuthor() == user"
  *           }
  *      },
- *     collectionOperations={"get",
- *     "post"
- *      }
+ *     collectionOperations={
+ *          "get",
+ *          "post",
+ *      },
+ *      denormalizationContext={
+ *          "groups"={"post"}
+ *     },
+ *     subresourceOperations={ "api_blog_posts_comments_get_subresource"={
+ *              "method"="get",
+ *              "normalization_context"={"groups"={"got-comment"}}
+ *          }}
  * )
  * @ORM\Entity(repositoryClass=CommentRepository::class)
  */
-class Comment
+class Comment implements AuthoredEntityInterface, PublicDateEntityInterface
 {
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"got-comment"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="text")
+     * @Groups({"post", "got-comment"})
+     * @Assert\Length(min=5, max=3000)
+     * @Assert\NotBlank()
      */
     private $content;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"got-comment"})
      */
     private $published;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="comments")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"got-comment"})
      */
-    private $Author;
+    private $author;
 
     /**
      * @ORM\ManyToOne(targetEntity=BlogPost::class, inversedBy="comments")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"post"})
      */
     private $blogPost;
 
@@ -72,7 +90,7 @@ class Comment
         return $this->published;
     }
 
-    public function setPublished(\DateTimeInterface $published): self
+    public function setPublished(\DateTimeInterface $published): PublicDateEntityInterface
     {
         $this->published = $published;
 
@@ -81,12 +99,15 @@ class Comment
 
     public function getAuthor(): ?User
     {
-        return $this->Author;
+        return $this->author;
     }
 
-    public function setAuthor(?User $Author): self
+    /**
+     * @param UserInterface $author
+     */
+    public function setAuthor(UserInterface $author): AuthoredEntityInterface
     {
-        $this->Author = $Author;
+        $this->author = $author;
 
         return $this;
     }
