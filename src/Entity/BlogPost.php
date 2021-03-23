@@ -14,7 +14,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource(
- *     itemOperations={"get",
+ *     itemOperations={
+ *     "get"={
+ *      "normalization_context"={"groups"={"get-blog-post-with-author"}}
+ *     },
  *     "put"={
  *          "access_control"="object.getAuthor() == user"
  *     }
@@ -35,6 +38,7 @@ class BlogPost implements AuthoredEntityInterface, PublicDateEntityInterface
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"get-blog-post-with-author"})
      */
     private $id;
 
@@ -42,12 +46,13 @@ class BlogPost implements AuthoredEntityInterface, PublicDateEntityInterface
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
      * @Assert\Length(min=10)
-     * @Groups({"post"})
+     * @Groups({"post", "get-blog-post-with-author"})
      */
     private $title;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"get-blog-post-with-author"})
      */
     private $published;
 
@@ -70,12 +75,14 @@ class BlogPost implements AuthoredEntityInterface, PublicDateEntityInterface
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="blogPosts")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"get-blog-post-with-author"})
      */
     private $author;
 
     /**
      * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="blogPost")
      * @ApiSubresource()
+     * @Groups({"get-blog-post-with-author"})
      */
     private $comments;
 

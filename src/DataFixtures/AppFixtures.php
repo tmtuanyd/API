@@ -18,19 +18,36 @@ class AppFixtures extends Fixture
             'username'=>'admin',
             'email'=>'admin@blog.com',
             'fullname'=>'admin',
-            'password'=>'123'
+            'password'=>'123',
+            'roles' => [User::ROLE_ADMIN]
         ],
         [
             'username'=>'admin1',
             'email'=>'admin1@blog.com',
             'fullname'=>'admin1',
-            'password'=>'123'
+            'password'=>'123',
+            'roles' => [User::ROLE_SUPERADMIN]
         ],
         [
-            'username'=>'admin2',
-            'email'=>'admin2@blog.com',
-            'fullname'=>'admin2',
-            'password'=>'123'
+            'username'=>'writer',
+            'email'=>'writer@blog.com',
+            'fullname'=>'writer',
+            'password'=>'123',
+            'roles' => [User::ROLE_WRITER]
+        ],
+        [
+            'username'=>'editor',
+            'email'=>'editor@blog.com',
+            'fullname'=>'editor',
+            'password'=>'123',
+            'roles' => [User::ROLE_EDITOR]
+        ],
+        [
+            'username'=>'commentator',
+            'email'=>'commentator@blog.com',
+            'fullname'=>'commentator',
+            'password'=>'123',
+            'roles' => [User::ROLE_COMMENTATOR]
         ],
     ];
     public function __construct(UserPasswordEncoderInterface $passwordEncoder)
@@ -52,7 +69,7 @@ class AppFixtures extends Fixture
             $blogPost->setPublished($this->faker->dateTimeThisMonth);
             $blogPost->setContent($this->faker->realText());
 
-            $authorReference = $this->getReference($this->getRandomUserReference());
+            $authorReference = $this->getRandomUserReference($blogPost);
             $blogPost->setAuthor($authorReference);
             $blogPost->setSlug($this->faker->slug);
 
@@ -75,7 +92,7 @@ class AppFixtures extends Fixture
                 $comment = new Comment();
                 $comment->setContent($this->faker->realText());
                 $comment->setPublished($this->faker->dateTimeThisMonth);
-                $authorReference = $this->getReference($this->getRandomUserReference()) ;
+                $authorReference = $this->getRandomUserReference($comment) ;
                 $comment->setAuthor($authorReference);
                 $comment->setBlogPost($blog);
 
@@ -94,6 +111,7 @@ class AppFixtures extends Fixture
             $user->setPassword($this->passwordEncoder->encodePassword($user, $userFixture['password']));
             $user->setEmail($userFixture['email']);
             $user->setFullname($userFixture['fullname']);
+            $user->setRoles($userFixture['roles']);
             $this->addReference('user_' . $userFixture['username'], $user);
 
             $manager->persist($user);
@@ -106,8 +124,18 @@ class AppFixtures extends Fixture
      * @return string
      * @throws \Exception
      */
-    protected function getRandomUserReference():string
+    protected function getRandomUserReference($entity):User
     {
-        return 'user_' . self::USERS[random_int(0, 2)]['username'];
+        $randomUser = self::USERS[random_int(0, 4)];
+        if($entity instanceof BlogPost && !count(array_intersect($randomUser['roles'], [User::ROLE_SUPERADMIN, User::ROLE_ADMIN, User::ROLE_WRITER])))
+        {
+            return $this->getRandomUserReference($entity);
+        }
+        if($entity instanceof Comment && !count(array_intersect($randomUser['roles'], [User::ROLE_SUPERADMIN, User::ROLE_ADMIN, User::ROLE_WRITER])))
+        {
+            return $this->getRandomUserReference($entity);
+        }
+
+        return $this->getReference('user_' . $randomUser['username']) ;
     }
 }

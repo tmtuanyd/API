@@ -42,7 +42,7 @@ class Comment implements AuthoredEntityInterface, PublicDateEntityInterface
 
     /**
      * @ORM\Column(type="text")
-     * @Groups({"post", "got-comment"})
+     * @Groups({"post", "got-comment", "get-blog-post-with-author"})
      * @Assert\Length(min=5, max=3000)
      * @Assert\NotBlank()
      */
