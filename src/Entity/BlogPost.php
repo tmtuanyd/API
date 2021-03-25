@@ -19,12 +19,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  *      "normalization_context"={"groups"={"get-blog-post-with-author"}}
  *     },
  *     "put"={
- *          "access_control"="object.getAuthor() == user"
+ *          "access_control"="is_granted('ROLE_EDITOR') or is_granted('ROLE_WRITER') and object.getAuthor() == user"
  *     }
  *      },
  *     collectionOperations={
  *     "get",
- *     "post"
+ *     "post"={"access_control"="is_granted('ROLE_WRITER')"}
  *      },
  *     denormalizationContext={
  *          "groups"={"post"}

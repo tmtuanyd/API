@@ -75,7 +75,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"post", "put", "got-comment"})
+     * @Groups({"post", "put", "got-comment", "get-admin", "get-owner"})
      * @Assert\Email()
      */
     private $email;
@@ -87,13 +87,14 @@ class User implements UserInterface
     private $blogPosts;
 
     /**
-     * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="Author")
+     * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="author")
      * @Groups({"get"})
      */
     private $comments;
 
     /**
      * @ORM\Column(type="json")
+     * @Groups({"get-admin", "get-owner"})
      */
     private $roles = [];
 

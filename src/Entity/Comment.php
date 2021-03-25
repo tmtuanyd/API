@@ -13,12 +13,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ApiResource(
  *     itemOperations={"get",
  *          "put"={
- *              "access_control"="object.getAuthor() == user"
+ *              "access_control"="is_granted('ROLE_COMMENTATOR') or is_granted('ROLE_EDITOR') and object.getAuthor() == user"
  *           }
  *      },
  *     collectionOperations={
  *          "get",
- *          "post",
+ *          "post"={"access_control"="is_granted('ROLE_COMMENTATOR')"},
  *      },
  *      denormalizationContext={
  *          "groups"={"post"}
