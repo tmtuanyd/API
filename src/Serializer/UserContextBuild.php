@@ -9,7 +9,7 @@ use ApiPlatform\Core\Serializer\SerializerContextBuilderInterface;
 use App\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-
+//su dung serializer cho thang admin (cho tung quyen)
 class UserContextBuild implements SerializerContextBuilderInterface
 {
     /**

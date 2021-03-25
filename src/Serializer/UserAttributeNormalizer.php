@@ -13,6 +13,7 @@ use Symfony\Component\Serializer\SerializerAwareInterface;
 use Symfony\Component\Serializer\SerializerAwareTrait;
 use Symfony\Component\Serializer\SerializerInterface;
 
+//su dung serialize thoa man dieu kien nao do (nhu o day chi user moi xem duoc mail cua no)
 class UserAttributeNormalizer implements ContextAwareNormalizerInterface, SerializerAwareInterface
 {
     use SerializerAwareTrait;
