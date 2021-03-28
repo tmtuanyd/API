@@ -9,8 +9,10 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Controller\ResetPasswordActionController;
 
 /**
  * @ApiResource(
@@ -22,7 +24,16 @@ use Symfony\Component\Validator\Constraints as Assert;
  *          },
  *          "put"={
  *              "access_control"="object == user",
- *              "denormalization_context"={"groups"={"put"}}
+ *              "denormalization_context"={"groups"={"put"}},
+ *              "normalization_context"={"groups"={"get"}}
+ *          },
+ *           "put-reset-password"={
+ *              "access_control"="object == user",
+ *              "method"="PUT",
+ *              "path"="/users/{id}/reset-password",
+ *              "controller"=ResetPasswordActionController::class,
+ *              "denormalization_context"={"groups"={"put-reset-password"}},
+ *
  *          }
  *      },
  *     collectionOperations={
@@ -56,16 +67,48 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"get", "post", "got-comment", "get-blog-post-with-author"})
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(groups={"post"})
      */
     private $username;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups("put", "post")
-     * @Assert\NotBlank()
+     * @Groups("post")
+     * @Assert\NotBlank(groups={"post"})
      */
     private $password;
+    /**
+     * @Groups({"post"})
+     * @Assert\NotBlank(groups={"post"})
+     * @Assert\Expression(
+     *     "this.getPassword() === this.getRetypedPassword()",
+     *      message="Passwords does not match",
+     *     groups={"post"}
+     * )
+     */
+    private $retypedPassword;
+
+    /**
+     * @Groups("put-reset-password")
+     * @Assert\NotBlank()
+     */
+    private $newPassword;
+    /**
+     * @Groups({"put-reset-password"})
+     * @Assert\NotBlank()
+     * @Assert\Expression(
+     *     "this.getNewPassword() === this.getNewRetypedPassword()",
+     *      message="Passwords does not match"
+     * )
+     */
+    private $newRetypedPassword;
+
+    /**
+     * @Groups({"put-reset-password"})
+     * @Assert\NotBlank()
+     * @UserPassword()
+     */
+    private $oldPassword;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -76,7 +119,7 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"post", "put", "got-comment", "get-admin", "get-owner"})
-     * @Assert\Email()
+     * @Assert\Email(groups={"post", "put"})
      */
     private $email;
 
@@ -97,6 +140,10 @@ class User implements UserInterface
      * @Groups({"get-admin", "get-owner"})
      */
     private $roles = [];
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $passwordChangeDate;
 
     public function __construct()
     {
@@ -132,6 +179,15 @@ class User implements UserInterface
         $this->password = $password;
 
         return $this;
+    }
+
+    public function getRetypedPassword(): ?string
+    {
+        return $this->retypedPassword;
+    }
+    public function setRetypedPassword($retypedPassword): void
+    {
+        $this->retypedPassword = $retypedPassword;
     }
 
     public function getFullname(): ?string
@@ -245,4 +301,53 @@ class User implements UserInterface
 
         return $this;
     }
+
+
+    public function getNewPassword(): ?string
+    {
+        return $this->newPassword;
+    }
+
+
+    public function setNewPassword($newPassword): void
+    {
+        $this->newPassword = $newPassword;
+    }
+
+
+    public function getNewRetypedPassword(): ?string
+    {
+        return $this->newRetypedPassword;
+    }
+
+
+    public function setNewRetypedPassword($newRetypedPassword): void
+    {
+        $this->newRetypedPassword = $newRetypedPassword;
+    }
+
+
+    public function getOldPassword(): ?string
+    {
+        return $this->oldPassword;
+    }
+
+
+    public function setOldPassword($oldPassword): void
+    {
+        $this->oldPassword = $oldPassword;
+    }
+
+
+    public function getPasswordChangeDate()
+    {
+        return $this->passwordChangeDate;
+    }
+
+
+    public function setPasswordChangeDate($passwordChangeDate): void
+    {
+        $this->passwordChangeDate = $passwordChangeDate;
+    }
+
 }
