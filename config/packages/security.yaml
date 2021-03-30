@@ -37,8 +37,12 @@ security:
             pattern: ^/api
             stateless: true
             anonymous: true
+            guard:
+                authenticators:
+                    - App\Security\TokenAuthenticator
 
-#        public:
+
+            #        public:
 #            pattern: ^/api/user/confirm
 #            stateless: true
 #            anonymous: true
