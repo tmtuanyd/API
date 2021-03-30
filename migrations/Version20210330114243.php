@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20210329153704 extends AbstractMigration
+final class Version20210330114243 extends AbstractMigration
 {
     public function getDescription() : string
     {
@@ -20,15 +20,15 @@ final class Version20210329153704 extends AbstractMigration
     public function up(Schema $schema) : void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE "user" ADD enabled BOOLEAN NOT NULL DEFAULT FALSE');
-        $this->addSql('ALTER TABLE "user" ADD confirmation_token VARCHAR(40) DEFAULT NULL');
+        $this->addSql('CREATE SEQUENCE image_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
+        $this->addSql('CREATE TABLE image (id INT NOT NULL, url VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id))');
     }
 
     public function down(Schema $schema) : void
     {
         // this down() migration is auto-generated, please modify it to your needs
         $this->addSql('CREATE SCHEMA public');
-        $this->addSql('ALTER TABLE "user" DROP enabled');
-        $this->addSql('ALTER TABLE "user" DROP confirmation_token');
+        $this->addSql('DROP SEQUENCE image_id_seq CASCADE');
+        $this->addSql('DROP TABLE image');
     }
 }
