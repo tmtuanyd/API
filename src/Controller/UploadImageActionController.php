@@ -41,24 +41,35 @@ class UploadImageActionController extends AbstractController
    public function __invoke(Request $request)
    {
        // Create a new image instance
+       $uploadedFile = $request->files->get('file');
        $image = new Image();
+       if (!$uploadedFile) {
+           throw new BadRequestHttpException('"file" is required');
+       }
+       $image->setFile($uploadedFile);
+       $this->entityManager->persist($image);
+       $this->entityManager->flush();
+       $image->setFile(null);
+       return $image;
        //validate the form
-        $form = $this->createForm(ImageType::class, $image);
-        $form->handleRequest($request);
-        var_dump($form->isSubmitted());
-        if($form->isSubmitted() && $form->isValid())
-        {
-            //persist the new image entity
-            $this->entityManager->persist($image);
-            $this->entityManager->flush();
-            $image->setFile(null);
-            return $image;
-        }
+//        $form = $this->formFactory->create(ImageType::class, $image);
+//        $form->setData($request);
+//        $form->handleRequest($request);
+//        var_dump($form->isSubmitted());
+//       var_dump($form->getData());
+//        if($form->isSubmitted() && $form->isValid())
+//        {
+//            //persist the new image entity
+//            $this->entityManager->persist($image);
+//            $this->entityManager->flush();
+//            $image->setFile(null);
+//            return $image;
+//        }
 
        //uploading done for us in background by VichUploader
        //throw an validation exception, that means something went wrong during form validation
-       throw new ValidationException(
-           $this->validator->validate($image)
-       );
+//       throw new ValidationException(
+//           $this->validator->validate($image)
+//       );
    }
 }

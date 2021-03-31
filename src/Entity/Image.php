@@ -4,21 +4,25 @@ namespace App\Entity;
 
 use App\Repository\ImageRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Controller\UploadImageActionController;
 /**
  * @ORM\Entity(repositoryClass=ImageRepository::class)
- * @Vich\Uploadable
+ * @Vich\Uploadable()
+ * @ORM\HasLifecycleCallbacks()
  * @ApiResource(
+ *
  *    collectionOperations={
  *     "get",
  *     "post"={
- *     "method"="POST",
- *     "path"="/images",
- *     "controller"=UploadImageActionController::class,
- *     "defaults"={"_api_receive"=false}
+ *          "method"="POST",
+ *          "path"="/images",
+ *          "controller"=UploadImageActionController::class,
+ *          "deserialize"=false,
  *     }
  *     }
  * )
@@ -27,19 +31,19 @@ class Image
 {
     /**
      * @ORM\Id
-     * @ORM\GeneratedValue
+     * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
-     * @Vich\UploadableField(mapping="images", fileNameProperty="url")
-     * @Assert\NotNull()
+     * @Vich\UploadableField(mapping="product_image", fileNameProperty="url")
+     * @var string|null
      */
     private $file;
 
     /**
-     * @ORM\Column(nullable=true)
+     * @ORM\Column(type="string", nullable=true)
      */
     private $url;
 
@@ -49,19 +53,13 @@ class Image
     }
 
 
-    public function setId($id): void
-    {
-        $this->id = $id;
-    }
-
-
     public function getFile()
     {
         return $this->file;
     }
 
 
-    public function setFile($file): void
+    public function setFile(?File $file=null): void
     {
         $this->file = $file;
     }

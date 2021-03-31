@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Image;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -14,8 +15,8 @@ class ImageType extends AbstractType
     {
         $builder
             ->add('file', FileType::class,[
-//                'file'=> 'label.file',
-                'required'=>false
+                'label'=>'label.file',
+                'required' => false,
             ])
         ;
     }
@@ -24,6 +25,7 @@ class ImageType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Image::class,
+            'allow_extra_fields' => true,
             'csrf_protection' => false
         ]);
     }
