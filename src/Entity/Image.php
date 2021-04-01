@@ -15,7 +15,7 @@ use App\Controller\UploadImageActionController;
  * @Vich\Uploadable()
  * @ORM\HasLifecycleCallbacks()
  * @ApiResource(
- *
+ *    attributes={"order"={"id": "ASC"}},
  *    collectionOperations={
  *     "get",
  *     "post"={
@@ -44,6 +44,7 @@ class Image
 
     /**
      * @ORM\Column(type="string", nullable=true)
+     * @Groups({"get-blog-post-with-author"})
      */
     private $url;
 

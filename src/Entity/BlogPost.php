@@ -14,6 +14,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource(
+ *     attributes={"order"={"id": "DESC"}},
  *     itemOperations={
  *     "get"={
  *      "normalization_context"={"groups"={"get-blog-post-with-author"}}
@@ -86,9 +87,18 @@ class BlogPost implements AuthoredEntityInterface, PublicDateEntityInterface
      */
     private $comments;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Image::class)
+     * @ORM\JoinTable()
+     * @Groups("post", "get-blog-post-with-author")
+     * @ApiSubresource()
+     */
+    private $images;
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
+        $this->images = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -186,6 +196,30 @@ class BlogPost implements AuthoredEntityInterface, PublicDateEntityInterface
                 $comment->setBlogPost(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Image[]
+     */
+    public function getImages(): Collection
+    {
+        return $this->images;
+    }
+
+    public function addImage(Image $image): self
+    {
+        if (!$this->images->contains($image)) {
+            $this->images[] = $image;
+        }
+
+        return $this;
+    }
+
+    public function removeImage(Image $image): self
+    {
+        $this->images->removeElement($image);
 
         return $this;
     }
