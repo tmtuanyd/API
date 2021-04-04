@@ -5,3 +5,9 @@ api_platform:
         json: ['application/merge-patch+json']
     swagger:
         versions: [3]
+    eager_loading:
+        enabled: true
+#    collection:
+#        pagination:
+#            page_parameter_name: _page
+#            pagination_client_item_per_page: true

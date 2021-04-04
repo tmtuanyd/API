@@ -11,7 +11,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource(
- *     attributes={"order"={"published": "DESC"}},
+ *     attributes={"order"={"published": "DESC"}, "pagination_enabled"=false},
  *     itemOperations={"get",
  *          "put"={
  *              "access_control"="is_granted('ROLE_COMMENTATOR') or is_granted('ROLE_EDITOR') and object.getAuthor() == user"

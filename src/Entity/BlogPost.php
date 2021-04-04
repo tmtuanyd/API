@@ -44,7 +44,7 @@ use ApiPlatform\Core\Serializer\Filter\PropertyFilter;
  *     arguments={"orderParameterName"="_order"}
  * )
  * @ApiResource(
- *     attributes={"order"={"id": "DESC"}},
+ *     attributes={"order"={"id": "DESC"}, "pagination_items_per_page"=5},
  *     itemOperations={
  *     "get"={
  *      "normalization_context"={"groups"={"get-blog-post-with-author"}}
