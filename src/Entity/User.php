@@ -33,12 +33,14 @@ use App\Controller\ResetPasswordActionController;
  *              "path"="/users/{id}/reset-password",
  *              "controller"=ResetPasswordActionController::class,
  *              "denormalization_context"={"groups"={"put-reset-password"}},
- *
+ *              "validation_groups"={"put-reset-password"}
  *          }
  *      },
  *     collectionOperations={
  *          "post"={
- *              "denormalization_context"={"groups"={"post"}}
+ *              "denormalization_context"={"groups"={"post"}},
+ *              "normalization_context"={"groups"={"get"}},
+ *              "validation_groups"={"post"}
  *          }
  *     },
  *

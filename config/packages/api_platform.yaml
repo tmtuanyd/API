@@ -11,3 +11,6 @@ api_platform:
 #        pagination:
 #            page_parameter_name: _page
 #            pagination_client_item_per_page: true
+
+    exception_to_status:
+        App\Exception\EmptyBodyException: 400
