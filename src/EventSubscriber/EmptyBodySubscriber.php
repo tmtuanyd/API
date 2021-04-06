@@ -21,18 +21,18 @@ class EmptyBodySubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         // TODO: Implement getSubscribedEvents() method.
-        return [KernelEvents::REQUEST => ['handleEmptyBody', EventPriorities::POST_DESERIALIZE]];
+        return [KernelEvents::VIEW => ['handleEmptyBody', EventPriorities::PRE_VALIDATE]];
     }
-    public function handleEmptyBody(RequestEvent $event)
+    public function handleEmptyBody(ViewEvent $event)
     {
         $method = $event->getRequest()->getMethod();
+        var_dump($method);
         if(!in_array($method, [Request::METHOD_POST, Request::METHOD_PUT])){
             return;
         }
-        $data = $event->getRequest()->get('data');
-//        $data = $event->getResponse()->getContent();
+//        $data = $event->getRequest()->get('data');
+        $data = $event->getControllerResult();
         var_dump($data);
-//        var_dump(null === $data);
         if(null === $data)
         {
             throw new EmptyBodyException();

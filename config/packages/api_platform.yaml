@@ -14,3 +14,4 @@ api_platform:
 
     exception_to_status:
         App\Exception\EmptyBodyException: 400
+        App\Exception\InvalidConfirmationTokenException: 404
