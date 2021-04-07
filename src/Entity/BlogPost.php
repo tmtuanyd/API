@@ -253,4 +253,8 @@ class BlogPost implements AuthoredEntityInterface, PublicDateEntityInterface
 
         return $this;
     }
+    public function __toString():string
+    {
+        return $this->title;
+    }
 }

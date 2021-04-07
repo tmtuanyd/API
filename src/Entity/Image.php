@@ -75,5 +75,10 @@ class Image
     {
         $this->url = $url;
     }
+    public function __toString(): string
+    {
+        // TODO: Implement __toString() method.
+        return $this->id . ':' . $this->url;
+    }
 
 }

@@ -387,5 +387,10 @@ class User implements UserInterface
     {
         $this->confirmationToken = $confirmationToken;
     }
+    public function __toString():string
+    {
+        // TODO: Implement __toString() method.
+        return $this->fullname;
+    }
 
 }
