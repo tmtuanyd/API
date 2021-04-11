@@ -26,13 +26,13 @@ class EmptyBodySubscriber implements EventSubscriberInterface
     public function handleEmptyBody(ViewEvent $event)
     {
         $method = $event->getRequest()->getMethod();
-        var_dump($method);
+//        var_dump($method);
         if(!in_array($method, [Request::METHOD_POST, Request::METHOD_PUT])){
             return;
         }
 //        $data = $event->getRequest()->get('data');
         $data = $event->getControllerResult();
-        var_dump($data);
+//        var_dump($data);
         if(null === $data)
         {
             throw new EmptyBodyException();
