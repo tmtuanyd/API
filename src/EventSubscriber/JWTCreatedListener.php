@@ -23,7 +23,7 @@ class JWTCreatedListener
         {
             $data['data'] = array(
                 'roles' => $user->getRoles(),
-                'id' => $user->getId()
+                'userId' => $user->getId()
             );
         }
         $event->setData($data);
